@@ -6,16 +6,10 @@ const Login = () => {
       <div style={styles.box}>
         <h1>Welcome</h1>
         <p>Please log in using one of the following:</p>
-        <a
-          href={`${process.env.REACT_APP_BACKEND_URL}/auth/google`}
-          style={{ ...styles.button, ...styles.google }}
-        >
+        <a href="http://localhost:5000/auth/google" style={{ ...styles.button, ...styles.google }}>
           Login with Google
         </a>
-        <a
-          href={`${process.env.REACT_APP_BACKEND_URL}/auth/linkedin`}
-          style={{ ...styles.button, ...styles.linkedin }}
-        >
+        <a href="http://localhost:5000/auth/linkedin" style={{ ...styles.button, ...styles.linkedin }}>
           Login with LinkedIn
         </a>
       </div>
@@ -55,4 +49,4 @@ const styles = {
   },
 };
 
-export default Login;
+export default Login; // exports the Login component
