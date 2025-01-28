@@ -6,16 +6,10 @@ const Login = () => {
       <div style={styles.box}>
         <h1>Welcome</h1>
         <p>Please log in using one of the following:</p>
-        <a
-          href={`${process.env.REACT_APP_BACKEND_URL}/auth/google`}
-          style={{ ...styles.button, ...styles.google }}
-        >
+        <a href="https://myapp-back-n397.onrender.com/auth/google" style={{ ...styles.button, ...styles.google }}>
           Login with Google
         </a>
-        <a
-          href={`${process.env.REACT_APP_BACKEND_URL}/auth/linkedin`}
-          style={{ ...styles.button, ...styles.linkedin }}
-        >
+        <a href="https://myapp-back-n397.onrender.com/auth/linkedin" style={{ ...styles.button, ...styles.linkedin }}>
           Login with LinkedIn
         </a>
       </div>

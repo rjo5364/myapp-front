@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null); // For handling 401 or other errors
+  const [user, setUser] = useState(null); // Stores the user data
+  const [error, setError] = useState(null); // Stores error messages
 
   useEffect(() => {
     fetch("http://localhost:5000/profile", {
@@ -10,44 +10,31 @@ const Profile = () => {
     })
       .then((res) => {
         if (res.ok) {
-          // res.ok = true for 200-299
           return res.json();
         } else if (res.status === 401) {
-          // Unauthorized
           throw new Error("Unauthorized");
         } else {
-          // Some other error
           throw new Error("Server Error");
         }
       })
-      .then((data) => {
-        setUser(data);
-      })
+      .then((data) => setUser(data)) // Updates the user state with fetched data
       .catch((err) => {
-        if (err.message === "Unauthorized") {
-          setError("User not logged in");
-        } else {
-          setError("An error occurred while fetching the profile.");
-          console.error(err);
-        }
+        setError(err.message === "Unauthorized" ? "User not logged in" : "An error occurred.");
+        console.error(err);
       });
   }, []);
 
-  // If we have an error, display the error state (e.g. "User not logged in")
   if (error) {
     return (
       <div style={styles.container}>
         <div style={styles.box}>
           <h1>{error}</h1>
-          <a href="/" style={styles.button}>
-            Go to Login
-          </a>
+          <a href="/" style={styles.button}>Go to Login</a>
         </div>
       </div>
     );
   }
 
-  // If we're still waiting for user data and there's no error yet
   if (!user) {
     return (
       <div style={styles.container}>
@@ -58,7 +45,6 @@ const Profile = () => {
     );
   }
 
-  // Otherwise, display the logged-in user's info
   return (
     <div style={styles.container}>
       <div style={styles.box}>
@@ -75,7 +61,6 @@ const Profile = () => {
                 method: "GET",
                 credentials: "include",
               });
-              // If logout succeeds, redirect to login page
               if (response.ok) {
                 window.location.href = "/";
               } else {
@@ -126,4 +111,4 @@ const styles = {
   },
 };
 
-export default Profile;
+export default Profile; // Exports the Profile component

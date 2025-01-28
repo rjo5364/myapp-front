@@ -5,7 +5,7 @@ const Profile = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/profile`, {
+    fetch("https://myapp-back-n397.onrender.com/profile", {
       credentials: "include",
     })
       .then((res) => {
@@ -17,16 +17,10 @@ const Profile = () => {
           throw new Error("Server Error");
         }
       })
-      .then((data) => {
-        setUser(data);
-      })
+      .then((data) => setUser(data))
       .catch((err) => {
-        if (err.message === "Unauthorized") {
-          setError("User not logged in");
-        } else {
-          setError("An error occurred while fetching the profile.");
-          console.error(err);
-        }
+        setError(err.message === "Unauthorized" ? "User not logged in" : "An error occurred.");
+        console.error(err);
       });
   }, []);
 
@@ -35,9 +29,7 @@ const Profile = () => {
       <div style={styles.container}>
         <div style={styles.box}>
           <h1>{error}</h1>
-          <a href="/" style={styles.button}>
-            Go to Login
-          </a>
+          <a href="/" style={styles.button}>Go to Login</a>
         </div>
       </div>
     );
@@ -65,13 +57,10 @@ const Profile = () => {
           style={styles.button}
           onClick={async () => {
             try {
-              const response = await fetch(
-                `${process.env.REACT_APP_BACKEND_URL}/logout`,
-                {
-                  method: "GET",
-                  credentials: "include",
-                }
-              );
+              const response = await fetch("https://myapp-back-n397.onrender.com/logout", {
+                method: "GET",
+                credentials: "include",
+              });
               if (response.ok) {
                 window.location.href = "/";
               } else {
