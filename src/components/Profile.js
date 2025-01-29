@@ -10,32 +10,36 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        console.log('Fetching profile from:', `${process.env.REACT_APP_BACKEND_URL}/profile`);
         const response = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/profile`,
           {
-            credentials: "include",
+            credentials: 'include',
             headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
             },
           }
         );
 
+        console.log('Profile response status:', response.status);
+
         if (!response.ok) {
-          throw new Error(
-            response.status === 401
-              ? "Please log in to continue"
-              : "Failed to fetch profile"
-          );
+          if (response.status === 401) {
+            throw new Error('Please log in to continue');
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('Profile data received:', data);
         setUser(data);
       } catch (err) {
+        console.error('Profile fetch error:', err);
         setError(err.message);
-        if (err.message === "Please log in to continue") {
+        if (err.message === 'Please log in to continue') {
           setTimeout(() => {
-            navigate("/");
+            navigate('/');
           }, 2000);
         }
       } finally {
@@ -51,23 +55,23 @@ const Profile = () => {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/logout`,
         {
-          method: "GET",
-          credentials: "include",
+          method: 'GET',
+          credentials: 'include',
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
         }
       );
 
       if (response.ok) {
-        navigate("/");
+        navigate('/');
       } else {
-        throw new Error("Logout failed");
+        throw new Error('Logout failed');
       }
     } catch (err) {
-      console.error("Logout error:", err);
-      setError("Failed to logout. Please try again.");
+      console.error('Logout error:', err);
+      setError('Failed to logout. Please try again.');
     }
   };
 
@@ -86,14 +90,15 @@ const Profile = () => {
       <div style={styles.container}>
         <div style={styles.box}>
           <h2>{error}</h2>
+          <button onClick={() => navigate('/')} style={styles.button}>
+            Return to Login
+          </button>
         </div>
       </div>
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
     <div style={styles.container}>
@@ -103,6 +108,11 @@ const Profile = () => {
           <img src={user.profilePicture} alt="Profile" style={styles.image} />
         )}
         <p style={styles.email}>Email: {user.email}</p>
+        {user.lastLogin && (
+          <p style={styles.lastLogin}>
+            Last login: {new Date(user.lastLogin).toLocaleString()}
+          </p>
+        )}
         <button onClick={handleLogout} style={styles.button}>
           Logout
         </button>
@@ -141,6 +151,11 @@ const styles = {
     color: "#666",
     margin: "1rem 0",
   },
+  lastLogin: {
+    color: "#888",
+    fontSize: "0.9rem",
+    marginBottom: "1rem",
+  },
   button: {
     backgroundColor: "#0077b5",
     color: "white",
@@ -150,10 +165,7 @@ const styles = {
     cursor: "pointer",
     fontSize: "1rem",
     fontWeight: "500",
-    transition: "opacity 0.2s ease",
-    "&:hover": {
-      opacity: 0.9,
-    },
+    transition: "background-color 0.2s ease",
   },
 };
 
